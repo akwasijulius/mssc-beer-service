@@ -15,4 +15,14 @@ public class CustomerServiceImpl implements CustomerService {
                 .address("25 Test Rd")
                 .build();
     }
+
+    @Override
+    public void updateCustomer(UUID customerId, CustomerDto customerDto) {
+
+    }
+
+    @Override
+    public CustomerDto createCustomer(CustomerDto customerDto) {
+        return null;
+    }
 }

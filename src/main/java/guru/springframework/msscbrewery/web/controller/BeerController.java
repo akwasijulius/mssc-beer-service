@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,22 +28,35 @@ public class BeerController {
         this.beerService = beerService;
     }
 
+
     @GetMapping({"/{beerId}"})
     public ResponseEntity<BeerDto> getBeer(@PathVariable("beerId") UUID beerId){
-
         return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
     }
 
 
     @PostMapping
-    public ResponseEntity createBeer(BeerDto  beerDto){
-        beerService.createBeer(beerDto);
+    public ResponseEntity createBeer(@Valid @RequestBody BeerDto  beerDto){
+        beerService.saveBeer(beerDto);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", host + "/api/v1/beer/" + beerDto.getId());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
 
+    @PutMapping({"/(beerId}"})
+    public ResponseEntity updateBeer(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beerDto){
+        beerService.updateBeer(beerId, beerDto);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping({"/{beerId}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBeer(@PathVariable("beerId") UUID beerId){
+        beerService.deleteBeer(beerId);
+        //return new ResponseEntity(HttpStatus.OK);
+    }
 
 
 }
