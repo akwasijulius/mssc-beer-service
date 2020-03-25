@@ -1,5 +1,6 @@
 package guru.springframework.msscbrewery.domain;
 
+import guru.springframework.msscbrewery.web.model.BeerStyleEnum;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -36,7 +37,7 @@ public class Beer {
     private Timestamp lastModifiedDate;
 
     private String beerName;
-    private String beerStyle;
+    private BeerStyleEnum beerStyle;
 
     @Column(unique = true)
     private Long upc;

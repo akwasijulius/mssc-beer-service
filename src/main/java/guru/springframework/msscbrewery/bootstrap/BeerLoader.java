@@ -2,6 +2,7 @@ package guru.springframework.msscbrewery.bootstrap;
 
 import guru.springframework.msscbrewery.domain.Beer;
 import guru.springframework.msscbrewery.repository.BeerRepository;
+import guru.springframework.msscbrewery.web.model.BeerStyleEnum;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class BeerLoader implements CommandLineRunner {
         if (beerRepository.count() == 0){
            beerRepository.save(Beer.builder()
                     .beerName("Club Beer")
-                    .beerStyle("ALE")
+                    .beerStyle(BeerStyleEnum.ALE)
                     .price(new BigDecimal("2.99"))
                     .minOnHand(12)
                     .quantityToBrew(200)
@@ -36,7 +37,7 @@ public class BeerLoader implements CommandLineRunner {
 
            beerRepository.save(Beer.builder()
                     .beerName("Star Beer")
-                    .beerStyle("PALE_ALE")
+                    .beerStyle(BeerStyleEnum.LAGER)
                     .price(new BigDecimal("2.49"))
                     .minOnHand(10)
                     .quantityToBrew(150)
