@@ -11,7 +11,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(uses = DateMapper.class)
 public interface BeerMapper {
 
-    //@Mapping(target = "lastUpdatedDate", source = "")
     BeerDto beerToBeerDto(Beer beer);
 
     Beer beerDtoToBeer(BeerDto beerDto);

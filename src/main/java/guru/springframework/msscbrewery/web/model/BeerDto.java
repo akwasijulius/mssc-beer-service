@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -33,5 +34,9 @@ public class BeerDto {
     private Long upc;
 
     private OffsetDateTime createdDate;
-    private OffsetDateTime lastUpdatedDate;
+    private OffsetDateTime lastModifiedDate;
+    private BigDecimal price;
+    private Integer minOnHand;
+    private Integer quantityToBrew;
+    private Long version;
 }
