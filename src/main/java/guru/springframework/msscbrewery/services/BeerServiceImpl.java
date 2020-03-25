@@ -32,8 +32,8 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public BeerDto saveBeer(BeerDto beerDto) {
-        //TODO: implementation
-        return beerDto;
+        Beer saveBeer = beerRepository.save(mapper.beerDtoToBeer(beerDto));
+        return mapper.beerToBeerDto(saveBeer);
     }
 
     @Override
