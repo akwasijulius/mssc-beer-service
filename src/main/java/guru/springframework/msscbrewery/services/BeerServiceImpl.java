@@ -38,7 +38,12 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void updateBeer(UUID beerId, BeerDto beerDto) {
-        //TODO: implementation
+        Optional<Beer> optionalBeer = beerRepository.findById(beerId);
+        if (optionalBeer.isPresent()){
+            Beer beer = optionalBeer.get();
+            beerRepository.save(mapper.updateBeerFromDto(beerDto, beer));
+        }else
+            throw new RuntimeException("Beer with Id" + beerId + " not found");
     }
 
     @Override
