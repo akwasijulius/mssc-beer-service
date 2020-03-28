@@ -48,6 +48,6 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void deleteBeer(UUID beerId) {
-
+        beerRepository.deleteById(beerId);
     }
 }

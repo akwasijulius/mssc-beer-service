@@ -30,8 +30,8 @@ public class BeerDto {
     @NotBlank
     private String beerStyle;
 
-    @Positive
-    private Long upc;
+    //@Positive
+    private String upc;
 
     private OffsetDateTime createdDate;
     private OffsetDateTime lastModifiedDate;
