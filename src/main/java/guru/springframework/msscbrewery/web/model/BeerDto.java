@@ -30,13 +30,13 @@ public class BeerDto {
     @NotBlank
     private String beerStyle;
 
-    //@Positive
     private String upc;
-
     private OffsetDateTime createdDate;
     private OffsetDateTime lastModifiedDate;
     private BigDecimal price;
     private Integer minOnHand;
     private Integer quantityToBrew;
     private Long version;
+    private Integer quantityOnHand;
+
 }
