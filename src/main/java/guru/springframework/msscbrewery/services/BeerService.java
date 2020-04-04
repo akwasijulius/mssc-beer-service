@@ -11,7 +11,7 @@ import java.util.UUID;
  * Created by jt on 2019-04-20.
  */
 public interface BeerService {
-    BeerDto getBeerById(UUID beerId);
+    BeerDto getBeerById(UUID beerId, boolean showInventoryOnHand);
 
     BeerDto saveBeer(BeerDto beerDto);
 
@@ -19,5 +19,5 @@ public interface BeerService {
 
     void deleteBeer(UUID beerId);
 
-    BeerPagedList getBeers(String beerName, BeerStyleEnum beerStyleEnum, Integer pageNumber, Integer pageSize);
+    BeerPagedList getBeers(String beerName, BeerStyleEnum beerStyleEnum, Integer pageNumber, Integer pageSize, boolean showInventoryOnHand);
 }

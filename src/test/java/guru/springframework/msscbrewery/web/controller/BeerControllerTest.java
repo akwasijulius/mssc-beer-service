@@ -6,6 +6,7 @@ import guru.springframework.msscbrewery.services.BeerService;
 import guru.springframework.msscbrewery.web.model.BeerDto;
 import guru.springframework.msscbrewery.web.model.BeerStyleEnum;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 //@ExtendWith(SpringExtension.class) - no longer needed because its part of the @WebMvcTest
 @WebMvcTest(BeerController.class)
-@ComponentScan(basePackages = "guru.springframework.msscbrewery.web.mappers")
 public class BeerControllerTest {
 
     public static final String API_V1_BEER = "/api/v1/beer/";
@@ -54,9 +55,10 @@ public class BeerControllerTest {
                 .build();
     }
 
+    //@Disabled
     @Test
     public void getBeer() throws Exception {
-        given(beerService.getBeerById(any(UUID.class))).willReturn(validBeerDto);
+        given(beerService.getBeerById(any(UUID.class), anyBoolean())).willReturn(validBeerDto);
 
         mockMvc.perform(get(API_V1_BEER + UUID.randomUUID().toString())
                 .accept(MediaType.APPLICATION_JSON))

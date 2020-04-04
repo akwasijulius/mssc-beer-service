@@ -9,6 +9,7 @@ import guru.springframework.msscbrewery.web.model.BeerStyleEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,18 @@ public class BeerServiceImpl implements BeerService {
     @Autowired
     BeerMapper mapper;
 
+    @Cacheable(cacheNames = "beerCache", key = "#beerId", condition = "#showInventoryOnHand == false")
     @Override
-    public BeerDto getBeerById(UUID beerId) {
+    public BeerDto getBeerById(UUID beerId, boolean showInventoryOnHand) {
+        log.info("getBeerById() called with beerId {} and showInventoryOnHand {}", beerId, showInventoryOnHand);
         Optional<Beer> beer = beerRepository.findById(beerId);
-        return beer.map(value -> mapper.beerToBeerDto(value)).orElseThrow(RuntimeException::new);
+        return beer.map(value -> {
+            if (showInventoryOnHand) {
+                return mapper.beerToBeerDtoWithInventory(value);
+            }else {
+                log.info("mapper.beerToBeerDto(value) called");
+                return mapper.beerToBeerDto(value);
+            }}).orElseThrow(RuntimeException::new);
     }
 
     @Override
@@ -58,24 +67,30 @@ public class BeerServiceImpl implements BeerService {
         beerRepository.deleteById(beerId);
     }
 
+    @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false")
     @Override
-    public BeerPagedList getBeers(String beerName, BeerStyleEnum beerStyleEnum, Integer pageNumber, Integer pageSize) {
-        Page<Beer> allBeers = null;
+    public BeerPagedList getBeers(String beerName, BeerStyleEnum beerStyleEnum, Integer pageNumber, Integer pageSize, boolean showInventoryOnHand) {
+        Page<Beer> allBeers;
 
         if (beerStyleEnum == null && beerName == null) {
+            allBeers = beerRepository.findAll(PageRequest.of(pageNumber, pageSize));
+        }
+        else if (beerStyleEnum != null && Strings.isNotBlank(beerName ) ) {
             allBeers = beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyleEnum, PageRequest.of(pageNumber, pageSize));
         }
         else if (Strings.isNotBlank(beerName )){
             allBeers = beerRepository.findAllByBeerName(beerName, PageRequest.of(pageNumber, pageSize));
         }
-        else if (beerStyleEnum != null){
+        else {
             allBeers = beerRepository.findAllByBeerStyle(beerStyleEnum, PageRequest.of(pageNumber, pageSize));
         }
-        else {
-            allBeers = beerRepository.findAll(PageRequest.of(pageNumber, pageSize));
-        }
 
-        List<BeerDto> beerDtos = allBeers.getContent().stream().map(beer -> mapper.beerToBeerDto(beer)).collect(Collectors.toList());
+        List<BeerDto> beerDtos;
+        if (showInventoryOnHand){
+            beerDtos = allBeers.getContent().stream().map(beer -> mapper.beerToBeerDtoWithInventory(beer)).collect(Collectors.toList());
+        }else {
+            beerDtos = allBeers.getContent().stream().map(beer -> mapper.beerToBeerDto(beer)).collect(Collectors.toList());
+        }
         return new BeerPagedList(beerDtos, allBeers.getPageable(), allBeers.getTotalElements());
     }
 }

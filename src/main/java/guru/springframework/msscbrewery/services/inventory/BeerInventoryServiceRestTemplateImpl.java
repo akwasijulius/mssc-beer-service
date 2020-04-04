@@ -22,7 +22,7 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreUnknownFields = false)
 public class BeerInventoryServiceRestTemplateImpl implements BeerInventoryService {
 
-    private final String INVENTORY_PATH = "/api/v1/beer/{beerId}/inventory";
+    private final String INVENTORY_PATH = "api/v1/beer/upc/{upcId}/inventory";
     private final RestTemplate restTemplate;
     private String beerInventoryServiceHost;
 
@@ -35,19 +35,18 @@ public class BeerInventoryServiceRestTemplateImpl implements BeerInventoryServic
     }
 
     @Override
-    public Integer getOnhandInventory(UUID beerId) {
+    public Integer getOnhandInventory(String upc) {
         log.debug("Calling Inventory Service");
 
         ResponseEntity<List<BeerInventoryDto>> responseEntity = restTemplate
                 .exchange(beerInventoryServiceHost + INVENTORY_PATH, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<List<BeerInventoryDto>>(){}, (Object) beerId);
+                        new ParameterizedTypeReference<>() {
+                        }, upc);
 
         //sum from inventory list
-        Integer onHand = Objects.requireNonNull(responseEntity.getBody())
+        return Objects.requireNonNull(responseEntity.getBody())
                 .stream()
                 .mapToInt(BeerInventoryDto::getQuantityOnHand)
                 .sum();
-
-        return onHand;
     }
 }
